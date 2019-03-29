@@ -5,9 +5,9 @@ class DatabaseService {
 
   private static conn: Connection;
 
-  static async createConnection() {
+  static async createConnection(name: string = null) {
     if (this.conn == null) {
-      this.conn = await createConnection("main");
+      this.conn = await createConnection(name ? name : "main");
     }
     return this.conn;
   }

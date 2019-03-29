@@ -5,8 +5,8 @@ import DatabaseService from "../DatabaseService";
 export class user1553844530632 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<any> {
-    await DatabaseService.createConnection();
-    const userRepository = DatabaseService.getConnection().getRepository(User);
+    // await DatabaseService.createConnection("seed");
+    const userRepository =  queryRunner.connection.getRepository(User);
     const customer = await userRepository.create({
       username: "customer",
       password: "12345",

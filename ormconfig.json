@@ -32,10 +32,10 @@
   "migrationsRun": true,
   "logging": false,
   "entities": [
-    "src/models/**/*.ts"
+    "dist/models/**/*.js"
   ],
   "migrations": [
-    "src/seeds/**/*.ts"
+    "dist/seeds/**/*.js"
   ],
   "migrationsTableName": "migrations",
   "cli": {

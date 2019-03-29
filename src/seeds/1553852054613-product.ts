@@ -6,9 +6,9 @@ import {Product, ProductServiceCategory, ProductCategory} from "../models/Produc
 export class product1553852054613 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<any> {
-    await DatabaseService.createConnection();
-    const productRepository = DatabaseService.getConnection().getRepository(Product);
-    const placeRepository = DatabaseService.getConnection().getRepository(Place);
+    // await DatabaseService.createConnection("seed");
+    const productRepository = queryRunner.connection.getRepository(Product);
+    const placeRepository = queryRunner.connection.getRepository(Place);
     const firstProduct = productRepository.create({
       name: "Snorkeling",
       description: "Ini itu Snorkeling, tetapi Snorkeling bukan ini",

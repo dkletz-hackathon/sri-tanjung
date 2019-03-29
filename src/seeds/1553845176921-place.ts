@@ -6,9 +6,9 @@ import {User} from "../models/User";
 export class place1553845176921 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<any> {
-    await DatabaseService.createConnection();
-    const placeRepository = DatabaseService.getConnection().getRepository(Place);
-    const userRepository = DatabaseService.getConnection().getRepository(User);
+    // await DatabaseService.createConnection("seed");
+    const placeRepository = queryRunner.connection.getRepository(Place);
+    const userRepository = queryRunner.connection.getRepository(User);
     const firstPlace = placeRepository.create({
       name: "Pantai Teluk Biru",
       address: "Banyuwangi",
