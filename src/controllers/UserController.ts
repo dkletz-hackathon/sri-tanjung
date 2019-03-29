@@ -36,7 +36,13 @@ const update = async (req: Request, res: Response) => {
   if (!id || id === undefined) {
     throw new ApiError("error/parameter-error", 'ID not given');
   }
-
+  const user = await userRepository.findOne(id);
+  const {
+    username, password, email, phone_num, image_url, user_type
+  } = req.body;
+  userRepository.merge(user, { username, password, email, phone_num, image_url, user_type });
+  await userRepository.save(user);
+  return res.json(user);
 };
 
 const profile = async (req: Request, res: Response) => {

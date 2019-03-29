@@ -2,8 +2,20 @@ import DatabaseService from "../DatabaseService";
 import {Request, Response} from "express";
 import ApiError from "../ApiError";
 import {Place} from "../models/Place";
+import {Not} from "typeorm";
 
 const placeRepository = DatabaseService.getConnection().getRepository(Place);
+
+const checkIdModel = async (id: string | number) : Promise<Place> => {
+  if (!id || id === "undefined") {
+    throw new ApiError("error/parameter-error", 'ID not given');
+  }
+  const place = await placeRepository.findOne(id);
+  if (!place) {
+    throw new ApiError("error/not-found", "Model not found");
+  }
+  return place;
+};
 
 const index = async (req: Request, res: Response) => {
   const places = await placeRepository.find();
@@ -32,13 +44,34 @@ const store = async (req: Request, res: Response) => {
 };
 
 const update = async (req: Request, res: Response) => {
-  return res.json();
+  const place = await checkIdModel(req.params.id);
+  const {
+    name, address, phone_num, image_url, description, geo_x, geo_y, category
+  } = req.body;
+  placeRepository.merge(place, {name, address, phone_num, image_url, description, geo_x, geo_y, category});
+  await placeRepository.save(place);
+  return res.json(place);
 };
 
 const destroy = async (req: Request, res: Response) => {
-  return res.json();
+  const place = await checkIdModel(req.params.id);
+  await placeRepository.delete(place);
+  return res.json({
+    message: "Delete success"
+  });
+};
+
+const findPlaceNearby = async (req: Request, res: Response) => {
+  const focusedPlace = await checkIdModel(req.query.id);
+  const places = await placeRepository.find({ where: {
+    id: Not(focusedPlace.id)}
+  });
+  places.filter((place) => {
+    return Math.sqrt(Math.pow(focusedPlace.geo_x - place.geo_x, 2) + Math.pow(focusedPlace.geo_y - place.geo_y, 2)) < 20.0;
+  });
+  return res.json(places);
 };
 
 export {
-  index, show, store, update, destroy
+  index, show, store, update, destroy, findPlaceNearby
 }

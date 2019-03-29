@@ -1,11 +1,11 @@
-import {Column, Entity, ManyToOne, JoinColumn, ManyToMany} from "typeorm";
+import {Column, Entity, ManyToOne, JoinColumn} from "typeorm";
 import BaseModel from "./BaseModel";
 import {Place} from "./Place";
-import {Schedule} from "./Schedule";
 
 export enum ProductCategory {
   SERVICE = "service",
-  SOUVENIR = "souvenir"
+  SOUVENIR = "souvenir",
+  FOOD = "food"
 }
 
 export enum ProductServiceCategory {
@@ -41,8 +41,5 @@ export class Product extends BaseModel {
   @ManyToOne(() => Place, place => place.products)
   @JoinColumn({ name: "place_id" })
   place: Place;
-
-  @ManyToMany(() => Schedule, schedule => schedule.products)
-  schedules: Schedule[];
 
 }

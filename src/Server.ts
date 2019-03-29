@@ -25,6 +25,12 @@ class Server {
   private errorHandler() {
     this.express.use(
       async (error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        if (error.code === "error/not-found") {
+          return res.status(404).json({
+            error: error.message,
+            code: error.code
+          })
+        }
         return res.status(500).json({
           error: error.message
         });

@@ -2,7 +2,7 @@ import {Column, Entity, AfterLoad, BeforeInsert, BeforeUpdate, OneToMany} from "
 import * as bcrypt from 'bcrypt';
 import BaseModel from "./BaseModel";
 import {Card} from "./Card";
-import {Schedule} from "./Schedule";
+import {Order} from "./Order";
 
 export enum UserType {
   CUSTOMER = "customer",
@@ -34,8 +34,8 @@ export class User extends BaseModel {
   @OneToMany(() => Card, card => card.user)
   cards: Card[];
 
-  @OneToMany(() => Schedule, schedule => schedule.user)
-  schedules: Schedule[];
+  @OneToMany(() => Order, schedule => schedule.user)
+  orders: Order[];
 
   private tempPassword: string = "";
 
