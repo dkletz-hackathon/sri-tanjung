@@ -7,6 +7,7 @@ const router = new ApiRouter();
 router.post("/accept", auth, OrderController.setAcceptedOrder);
 router.post("/reject", OrderController.setRejectedOrder);
 router.post("/paid", OrderController.setPaidOrder);
+router.get("/owner", auth, OrderController.showToOwner);
 router.resource(OrderController)
   .middlewareResource({
     store: [auth],

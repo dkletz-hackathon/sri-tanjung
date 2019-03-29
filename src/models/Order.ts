@@ -42,6 +42,10 @@ export class Order extends BaseModel {
   @JoinColumn({ name: "user_id" })
   user: User;
 
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "owner_id" })
+  owner: User;
+
   @ManyToOne(() => Product)
   @JoinColumn({ name: "product_id" })
   product: Product;

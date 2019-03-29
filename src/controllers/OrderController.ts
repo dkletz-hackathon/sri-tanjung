@@ -5,6 +5,7 @@ import DatabaseService from "../DatabaseService";
 import {Product} from "../models/Product";
 import * as moment from "moment-timezone";
 import {In} from "typeorm";
+const axios = require("axios");
 
 const orderRepository = DatabaseService.getConnection().getRepository(Order);
 const productRepository = DatabaseService.getConnection().getRepository(Product);
@@ -31,7 +32,7 @@ const store = async (req: Request, res: Response) => {
   const {
     start_date, duration, total, product_id, phone_num
   } = req.body;
-  const product = await productRepository.findOne(product_id);
+  const product = await productRepository.findOne(product_id, {relations: ["place", "place.user"] });
   if (!product) {
     throw new ApiError("error/not-found", "Product not found");
   }
@@ -53,10 +54,10 @@ const store = async (req: Request, res: Response) => {
     total_price: totalPrice,
     user: req.auth,
     product: product,
+    owner: product.place.user,
     state: OrderState.CREATED
   });
   await orderRepository.save(order);
-  // TODO: send to raja-adil
   return res.status(201).json(order);
 };
 
@@ -78,20 +79,30 @@ const setRejectedOrder = async (req: Request, res: Response) => {
 };
 
 const setPaidOrder = async (req: Request, res: Response) => {
-  const {order_id} = req.body;
+  const {order_id, ref_code} = req.body;
   const order = await orderRepository.findOne({
     id: order_id,
     state: In([OrderState.CREATED])
-  });
+  }, { relations: ["user", "owner"] });
   if (!order) {
     throw new ApiError("error/not-found", "Order not found");
   }
   if (order.expired_date < moment(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ssZ")) {
     throw new ApiError("error/expired", "Can't pay expired order");
   }
-  order.state = OrderState.PAID;
-  await orderRepository.save(order);
-  return res.json(order);
+  const resp = await axios.post(
+    "http://localhost:3030/transaction/payment",
+    {
+      user_id: order.user.id,
+      ref_code: ref_code
+    });
+  if (resp.status === 201) {
+    order.state = OrderState.PAID;
+    await orderRepository.save(order);
+    return res.json(order);
+  } else {
+    throw new ApiError("error/transaction-error", resp.data.error);
+  }
 };
 
 const setAcceptedOrder = async (req: Request, res: Response) => {
@@ -108,6 +119,15 @@ const setAcceptedOrder = async (req: Request, res: Response) => {
   return res.json(order);
 };
 
+const showToOwner = async (req: Request, res: Response) => {
+  const orders = await orderRepository.find({
+    where: {
+      owner: req.auth,
+    }
+  });
+  return res.json(orders);
+};
+
 export {
-  index, show, store, setRejectedOrder, setPaidOrder, setAcceptedOrder
+  index, show, store, setRejectedOrder, setPaidOrder, setAcceptedOrder, showToOwner
 };
