@@ -1,7 +1,8 @@
 import BaseModel from "./BaseModel";
-import {Column, Entity, JoinColumn, ManyToOne, OneToOne} from "typeorm";
+import {AfterLoad, Column, Entity, JoinColumn, ManyToOne, OneToOne} from "typeorm";
 import {User} from "./User";
 import {Product} from "./Product";
+import * as moment from "moment-timezone";
 
 export enum OrderState {
   CREATED = "created",
@@ -14,13 +15,13 @@ export enum OrderState {
 export class Order extends BaseModel {
 
   @Column({ type: "timestamp with time zone" })
-  start_date: Date | String;
+  start_date: Date | string;
 
   @Column({ type: "timestamp with time zone" })
-  end_date: Date | String;
+  end_date: Date | string;
 
-  @Column({ type: "varchar" })
-  name: string;
+  @Column({ type: "timestamp with time zone" })
+  expired_date: Date | string;
 
   @Column({ type: "integer", default: 1})
   total: number;
@@ -41,9 +42,16 @@ export class Order extends BaseModel {
   @JoinColumn({ name: "user_id" })
   user: User;
 
-  @OneToOne(() => Product)
+  @ManyToOne(() => Product)
   @JoinColumn({ name: "product_id" })
   product: Product;
+
+  @AfterLoad()
+  setDate() {
+    this.start_date = moment(this.start_date).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ssZ");
+    this.end_date = moment(this.end_date).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ssZ");
+    this.expired_date = moment(this.expired_date).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ssZ");
+  }
 
 }
 

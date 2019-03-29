@@ -11,7 +11,9 @@ const generateErrorHandler = (controllers) => {
     return [];
   }
   if (Array.isArray(controllers)) {
-    return controllers.map(controller => errHandlerWrapper(controller));
+    return controllers.map(controller => {
+      return errHandlerWrapper(controller);
+    });
   }
   return errHandlerWrapper(controllers);
 };
@@ -49,7 +51,7 @@ class ApiRouter {
       this.router.get(
         "/:id",
         this.resourceMiddleware.show ?
-          generateErrorHandler(this.resourceMiddleware.show.push(this.resourceController.show)) :
+          generateErrorHandler([...this.resourceMiddleware.show, this.resourceController.show]) :
           generateErrorHandler(this.resourceController.show)
       );
     }
@@ -57,7 +59,7 @@ class ApiRouter {
       this.router.get(
         "",
         this.resourceMiddleware.index ?
-          generateErrorHandler(this.resourceMiddleware.index.push(this.resourceController.index)) :
+          generateErrorHandler([...this.resourceMiddleware.index, this.resourceController.index]) :
           generateErrorHandler(this.resourceController.index)
       );
     }
@@ -65,7 +67,7 @@ class ApiRouter {
       this.router.post(
         "",
         this.resourceMiddleware.store ?
-          generateErrorHandler(this.resourceMiddleware.store.push(this.resourceController.store)) :
+          generateErrorHandler([...this.resourceMiddleware.store, this.resourceController.store]) :
           generateErrorHandler(this.resourceController.store)
       );
     }
@@ -74,7 +76,7 @@ class ApiRouter {
         this.router[method](
           "/:id",
           this.resourceMiddleware.update ?
-            generateErrorHandler(this.resourceMiddleware.update.push(this.resourceController.update)) :
+            generateErrorHandler([...this.resourceMiddleware.update ,this.resourceController.update]) :
             generateErrorHandler(this.resourceController.update)
         );
       })
@@ -83,7 +85,7 @@ class ApiRouter {
       this.router.delete(
         "/:id",
         this.resourceMiddleware.destroy ?
-          generateErrorHandler(this.resourceMiddleware.destroy.push(this.resourceController.destroy)) :
+          generateErrorHandler([...this.resourceMiddleware.destroy, this.resourceController.destroy]) :
           generateErrorHandler(this.resourceController.destroy)
       );
     }

@@ -1,7 +1,6 @@
 import {Column, Entity, AfterLoad, BeforeInsert, BeforeUpdate, OneToMany} from "typeorm";
 import * as bcrypt from 'bcrypt';
 import BaseModel from "./BaseModel";
-import {Card} from "./Card";
 import {Order} from "./Order";
 
 export enum UserType {
@@ -31,9 +30,6 @@ export class User extends BaseModel {
   @Column({ type: "enum", enum: UserType, default: UserType.CUSTOMER })
   user_type: UserType;
 
-  @OneToMany(() => Card, card => card.user)
-  cards: Card[];
-
   @OneToMany(() => Order, schedule => schedule.user)
   orders: Order[];
 
@@ -50,6 +46,10 @@ export class User extends BaseModel {
     if (this.password !== this.tempPassword) {
       this.password = bcrypt.hashSync(this.password, 10);
     }
+  }
+
+  check(password): boolean {
+    return bcrypt.compareSync(password, this.password);
   }
 
 }
