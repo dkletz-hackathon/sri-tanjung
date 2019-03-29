@@ -33,7 +33,7 @@ const show = async (req: Request, res: Response) => {
   if (!id || id === "undefined") {
     throw new ApiError("error/parameter-error", 'ID not given');
   }
-  const product = await productRepository.findOne(id, { relations: ["user", "products"]});
+  const product = await productRepository.findOne(id, { relations: ["place"]});
   return res.json(product);
 };
 
