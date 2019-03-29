@@ -35,7 +35,7 @@
     "src/models/**/*.ts"
   ],
   "migrations": [
-    "src/migrations/**/*.ts"
+    "src/seeds/**/*.ts"
   ],
   "migrationsTableName": "migrations",
   "cli": {

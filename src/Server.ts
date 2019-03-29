@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
+import * as cors from 'cors';
 require("express");
 
 class Server {
@@ -15,6 +16,7 @@ class Server {
   }
 
   private globalMiddleware() {
+    this.express.use(cors());
     this.express.use(morgan('dev'));
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({extended: true}));

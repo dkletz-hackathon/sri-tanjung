@@ -1,6 +1,7 @@
-import {Entity, Column, OneToMany} from "typeorm";
+import {Entity, Column, OneToMany, ManyToOne, JoinColumn} from "typeorm";
 import {Product} from "./Product";
 import BaseModel from "./BaseModel";
+import {User} from "./User";
 
 export enum PlaceCategory {
   TOURISM = "tourism",
@@ -37,5 +38,9 @@ export class Place extends BaseModel {
 
   @OneToMany(() => Product, product => product.place)
   products: Product[];
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "user_id" })
+  user: User;
 
 }
