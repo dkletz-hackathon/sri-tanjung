@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
+require("express");
 
 class Server {
 
@@ -9,8 +10,8 @@ class Server {
   constructor() {
     this.express = express();
     this.globalMiddleware();
-    this.errorHandler();
     this.routes();
+    this.errorHandler();
   }
 
   private globalMiddleware() {
@@ -21,20 +22,19 @@ class Server {
 
   private errorHandler() {
     this.express.use(
-      async function(
-        error, req: express.Request, res: express.Response, next: express.NextFunction) {
-          return res.status(500).json({
-            error: error.message
-          });
-        })
+      async (error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        return res.status(500).json({
+          error: error.message
+        });
+      })
   }
 
   private routes() {
     this.express.get('/', (req, res) => {
       res.json('OK');
     });
+    this.express.use("/", require("./routes").default);
   }
-
 }
 
 export default Server;

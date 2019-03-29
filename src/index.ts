@@ -1,10 +1,9 @@
-require("express-async-errors");
 import Server from './Server';
 import DatabaseService from './DatabaseService';
 import * as http from 'http';
 
 async function start() {
-  await DatabaseService.getConnection();
+  await DatabaseService.createConnection();
   const server = new Server();
   const app = http.createServer(server.express);
   const port = process.env.PORT || 5000;

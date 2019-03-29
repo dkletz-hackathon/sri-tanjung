@@ -5,12 +5,17 @@ class DatabaseService {
 
   private static conn: Connection;
 
-  static async getConnection() {
+  static async createConnection() {
     if (this.conn == null) {
-      this.conn = await createConnection();
+      this.conn = await createConnection("main");
     }
     return this.conn;
   }
+
+  static getConnection() {
+    return this.conn;
+  }
+
 }
 
 export default DatabaseService;

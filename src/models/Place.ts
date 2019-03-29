@@ -1,38 +1,39 @@
 import {Entity, Column, OneToMany} from "typeorm";
 import {Product} from "./Product";
+import BaseModel from "./BaseModel";
 
-export enum PlaceType {
+export enum PlaceCategory {
   TOURISM = "tourism",
   SOUVENIR = "souvenir",
   CULINARY = "culinary"
 }
 
 @Entity("places")
-export class Place {
+export class Place extends BaseModel {
 
-  @Column({ type: "string" })
+  @Column({ type: "varchar" })
   name: string;
 
-  @Column({ type: "string" })
+  @Column({ type: "varchar" })
   address: string;
 
-  @Column({ type: "string" })
+  @Column({ type: "varchar" })
   phone_num: string;
 
-  @Column({ type: "string" })
+  @Column({ type: "varchar" })
   image_url: string;
 
   @Column({ type: "text" })
   description: string;
 
-  @Column({ type: "double" })
+  @Column({ type: "double precision" })
   geo_x: number;
 
-  @Column({ type: "double" })
+  @Column({ type: "double precision" })
   geo_y: number;
 
-  @Column({ type: "enum", enum: PlaceType, default: PlaceType.TOURISM })
-  place_type: PlaceType;
+  @Column({ type: "enum", enum: PlaceCategory, default: PlaceCategory.TOURISM })
+  category: PlaceCategory;
 
   @OneToMany(() => Product, product => product.place)
   products: Product[];

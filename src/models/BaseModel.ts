@@ -1,4 +1,4 @@
-import {BeforeInsert, BeforeUpdate, Column, PrimaryGeneratedColumn,} from "typeorm";
+import {AfterLoad, BeforeInsert, BeforeUpdate, Column, PrimaryGeneratedColumn,} from "typeorm";
 import * as moment from 'moment-timezone';
 
 abstract class BaseModel {
@@ -28,6 +28,15 @@ abstract class BaseModel {
   @BeforeUpdate()
   updateDate() {
     this.updated_at = moment(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ssZ");
+  }
+
+  /**
+   * Same for saveDates()
+   */
+  @AfterLoad()
+  setTimezoneDate() {
+    this.created_at = moment(this.created_at).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ssZ");
+    this.updated_at = moment(this.created_at).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ssZ");
   }
 
 }
