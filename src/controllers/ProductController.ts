@@ -1,7 +1,7 @@
 import DatabaseService from "../DatabaseService";
 import {Request, Response} from "express";
 import ApiError from "../ApiError";
-import {Product} from "../models/Product";
+import {Product, ProductCategory} from "../models/Product";
 import {Place} from "../models/Place";
 
 const productRepository = DatabaseService.getConnection().getRepository(Product);
@@ -80,6 +80,15 @@ const destroy = async (req: Request, res: Response) => {
   });
 };
 
+const getSouvenir = async (req: Request, res: Response) => {
+  const products = await productRepository.find({
+    where: {
+      category: ProductCategory.SOUVENIR
+    }
+  });
+  return res.json(products);
+};
+
 export {
-  index, show, store, update, destroy
+  index, show, store, update, destroy, getSouvenir
 }
