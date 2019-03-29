@@ -38,6 +38,9 @@ export class Product extends BaseModel {
   @Column({ type: "enum", enum: ProductServiceCategory, nullable: true})
   service_category: ProductServiceCategory;
 
+  @Column({ type: "integer" })
+  place_id: number;
+
   @ManyToOne(() => Place, place => place.products)
   @JoinColumn({ name: "place_id" })
   place: Place;

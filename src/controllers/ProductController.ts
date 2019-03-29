@@ -19,8 +19,13 @@ const checkIdModel = async (id: string | number) : Promise<Product> => {
 };
 
 const index = async (req: Request, res: Response) => {
-  const places = await productRepository.find();
-  return res.json(places);
+  const {place} = req.query;
+  const products = await productRepository.find({
+    where: {
+      place_id: place
+    }
+  });
+  return res.json(products);
 };
 
 const show = async (req: Request, res: Response) => {
