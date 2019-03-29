@@ -63,11 +63,11 @@ const destroy = async (req: Request, res: Response) => {
 
 const findPlaceNearby = async (req: Request, res: Response) => {
   const focusedPlace = await checkIdModel(req.query.id);
-  const places = await placeRepository.find({ where: {
+  let places = await placeRepository.find({ where: {
     id: Not(focusedPlace.id)}
   });
-  places.filter((place) => {
-    return Math.sqrt(Math.pow(focusedPlace.geo_x - place.geo_x, 2) + Math.pow(focusedPlace.geo_y - place.geo_y, 2)) < 20.0;
+  places = places.filter((place) => {
+    return Math.sqrt(Math.pow(focusedPlace.geo_x - place.geo_x, 2) + Math.pow(focusedPlace.geo_y - place.geo_y, 2)) < 10.0;
   });
   return res.json(places);
 };

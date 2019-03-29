@@ -3,8 +3,8 @@ import * as PlaceController from "../controllers/PlaceController";
 
 const router = new ApiRouter();
 
-router.resource(PlaceController);
 router.get("/nearby", PlaceController.findPlaceNearby);
+router.resource(PlaceController);
 router.executeResource();
 
 export default router;

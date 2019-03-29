@@ -3,11 +3,11 @@ import {Column, Entity, JoinColumn, ManyToOne, OneToOne} from "typeorm";
 import {User} from "./User";
 import {Product} from "./Product";
 
-export enum ScheduleState {
+export enum OrderState {
   CREATED = "created",
+  PAID = "paid",
   REJECTED = "rejected",
-  ACCEPTED = "accepted",
-  PAID = "paid"
+  ACCEPTED = "accepted"
 }
 
 @Entity("orders")
@@ -28,8 +28,14 @@ export class Order extends BaseModel {
   @Column({ type: "integer" })
   total_price: number;
 
-  @Column({ type: "enum", enum: ScheduleState, default: ScheduleState.CREATED })
-  state: ScheduleState;
+  @Column({ type: "varchar" })
+  phone_num: string;
+
+  @Column({ type: "enum", enum: OrderState, default: OrderState.CREATED })
+  state: OrderState;
+
+  @Column({ type: "integer" })
+  user_id: number;
 
   @ManyToOne(() => User, user => user.orders)
   @JoinColumn({ name: "user_id" })
