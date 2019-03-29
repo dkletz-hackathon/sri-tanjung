@@ -66,12 +66,20 @@ const setRejectedOrder = async (req: Request, res: Response) => {
   const order = await orderRepository.findOne({
     id: order_id,
     state: In([OrderState.CREATED, OrderState.PAID])
+  }, {
+    relations: ["user"]
   });
   if (!order) {
     throw new ApiError("error/not-found", "Order not found");
   }
   if (order.state === OrderState.PAID) {
-    // Shot to user
+    await axios.post(
+      "http://localhost:3030/transaction/return",
+      {
+        order_id: order.id,
+        user_id: order.user.id,
+        total_price: order.total_price
+      });
   }
   order.state = OrderState.REJECTED;
   await orderRepository.save(order);
@@ -110,10 +118,19 @@ const setAcceptedOrder = async (req: Request, res: Response) => {
   const order = await orderRepository.findOne({
     id: order_id,
     state: In([OrderState.PAID])
+  }, {
+    relations: ["user"]
   });
   if (!order) {
     throw new ApiError("error/not-found", "Order not found");
   }
+  await axios.post(
+    "http://localhost:3030/transaction/receive",
+    {
+      order_id: order.id,
+      user_id: order.user.id,
+      total_price: order.total_price
+    });
   order.state = OrderState.ACCEPTED;
   await orderRepository.save(order);
   return res.json(order);
