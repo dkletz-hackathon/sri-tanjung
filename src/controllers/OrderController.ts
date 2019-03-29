@@ -145,6 +145,12 @@ const showToOwner = async (req: Request, res: Response) => {
   return res.json(orders);
 };
 
+const getTransaction = async (req: Request, res: Response) => {
+  const user_id = req.auth.id;
+  const resp = await axios.get(`http://localhost:3030/transaction/get?user_id=${user_id}`);
+  return res.json(resp.data);
+};
+
 export {
-  index, show, store, setRejectedOrder, setPaidOrder, setAcceptedOrder, showToOwner
+  index, show, store, setRejectedOrder, setPaidOrder, setAcceptedOrder, showToOwner, getTransaction
 };
